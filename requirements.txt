@@ -1,0 +1,3 @@
+aiogram>=3.11
+asyncio>=3.4
+python-dotenv>=1.0
