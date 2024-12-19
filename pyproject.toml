@@ -1,0 +1,14 @@
+[project]
+name = "weather_bot"
+version = "1.0.0"
+description = "Central University AccuWeather telegram bot"
+dependencies = [
+    "python-dotenv",
+    "asyncio",
+    "aiohttp",
+    "aiogram"
+]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"

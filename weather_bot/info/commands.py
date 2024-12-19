@@ -1,7 +1,7 @@
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from info import router, start_message, help_message
+from . import router, start_message, help_message
 
 
 @router.message(Command("start"))

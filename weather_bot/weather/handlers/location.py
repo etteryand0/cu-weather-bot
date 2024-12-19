@@ -1,8 +1,8 @@
 from aiogram import F
 from aiogram.types import Message
 
-from weather import router
-from weather.context import DialogueState
+from weather_bot.weather import router
+from weather_bot.weather.context import DialogueState
 
 
 @router.message(F.location)

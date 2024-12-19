@@ -1,9 +1,9 @@
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from weather import router
-from weather.keyboards import request_location_kb
-from weather.context import DialogueState
+from weather_bot.weather import router
+from weather_bot.weather.keyboards import request_location_kb
+from weather_bot.weather.context import DialogueState
 
 
 @router.message(Command("weather"))

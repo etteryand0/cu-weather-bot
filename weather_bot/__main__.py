@@ -5,9 +5,9 @@ import logging
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher
 
-import weather
-import info
-from context import Context
+from . import weather
+from . import info
+from weather_bot.context import Context
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv()
