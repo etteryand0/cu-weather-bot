@@ -3,10 +3,11 @@ from aiogram.types import Message
 
 from weather_bot.weather import router
 from weather_bot.weather.context import DialogueState
+from weather_bot.context import Context
 
 
 @router.message(F.location)
-async def location_handler(message: Message, ctx):
+async def location_handler(message: Message, ctx: Context):
     dialogue = ctx.get_dialogue(message.from_user.id)
 
     if not dialogue:
@@ -15,15 +16,16 @@ async def location_handler(message: Message, ctx):
 
     lat, lon = message.location.latitude, message.location.longitude
 
-    match dialogue["state"]:
+    match dialogue.state:
         case DialogueState.START_CITY:
-            dialogue["state"] = DialogueState.END_CITY
-            dialogue["data"] = {"start_city": [lat, lon]}
-            ctx.set_dialogue(message.from_user.id, dialogue)
+            dialogue.set_state(DialogueState.END_CITY)
+            dialogue.set_data({"start_city": [lat, lon]})
             return
         case DialogueState.END_CITY:
-            dialogue["state"] = DialogueState.PITSTOP_CITIES
-            dialogue["data"]["end_city"] = [lat, lon]
+            d = dialogue.data
+            d["end_city"] = [lat, lon]
+            dialogue.set_state(DialogueState.PITSTOP_CITIES)
+            dialogue.set_data(d)
             ctx.set_dialogue(message.from_user.id, dialogue)
             return
 
