@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher
 
 import weather
+import info
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv()
@@ -17,7 +18,7 @@ async def main():
 
     bot = Bot(token=os.environ.get("BOT_TOKEN"))
     dp = Dispatcher()
-    dp.include_router(weather.router)
+    dp.include_routers(weather.router, info.router)
     await dp.start_polling(bot)
 
 
