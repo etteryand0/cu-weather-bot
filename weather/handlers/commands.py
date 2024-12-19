@@ -2,7 +2,7 @@ from aiogram.filters import Command
 from aiogram.types import Message
 
 from weather import router
-from keyboards import request_location_kb
+from weather.keyboards import request_location_kb
 
 
 @router.message(Command("weather"))
