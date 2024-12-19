@@ -3,26 +3,21 @@ import os
 import asyncio
 import logging
 from dotenv import load_dotenv
-from aiogram import Bot, Dispatcher, types
-from aiogram.filters.command import Command
+from aiogram import Bot, Dispatcher
 
-
-load_dotenv()
-
-if os.environ.get("BOT_TOKEN") is None:
-    raise Exception("Токена бота 'BOT_TOKEN' не существует в окружении")
+import weather
 
 logging.basicConfig(level=logging.INFO)
-bot = Bot(token=os.environ.get("BOT_TOKEN"))
-dp = Dispatcher()
-
-
-@dp.message(Command("start"))
-async def cmd_start(message: types.Message):
-    await message.answer("Hello!")
+load_dotenv()
 
 
 async def main():
+    if os.environ.get("BOT_TOKEN") is None:
+        raise Exception("Токена бота 'BOT_TOKEN' не существует в окружении")
+
+    bot = Bot(token=os.environ.get("BOT_TOKEN"))
+    dp = Dispatcher()
+    dp.include_router(weather.router)
     await dp.start_polling(bot)
 
 
