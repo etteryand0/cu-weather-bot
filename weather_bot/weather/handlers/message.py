@@ -9,9 +9,7 @@ from weather_bot.api import get_location_key_by_city, parse_error_code
 from weather_bot.context import Context
 from weather_bot.filters import DialogueStateFilter
 from weather_bot.weather import router
-from weather_bot.weather.context import DialogueState
-
-from . import save_end_city, save_start_city
+from weather_bot.weather.context import DialogueState, save_end_city, save_start_city
 
 
 @router.message(
