@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 import aiohttp
 
@@ -49,11 +50,16 @@ async def get_location_key_by_city(
     return None, None
 
 
-async def get_weather_data(location_key, *, session=None):
-    url = f"http://dataservice.accuweather.com/forecasts/v1/daily/1day/{location_key}"
+async def get_forecast(location_key, days: int, *, session=None):
+    """
+    Получить предсказание погоды на 1, 5, 10 или 15 дней вперёд
+    """
+
+    url = f"http://dataservice.accuweather.com/forecasts/v1/daily/{days}day/{location_key}"
     params = {
         "apikey": os.environ["ACCUWEATHER_API_KEY"],
         "details": "true",
+        "language": "ru-RU",
         "metric": "true",
     }
     if session is not None:
@@ -77,3 +83,14 @@ def parse_error_code(status_code):
             return "Превышен лимит запросов сервиса погоды"
         case _:
             return "Сервис погоды не доступен в данный момент"
+
+
+def parse_weather_conditions(forecast):
+    return {
+        "date": datetime.fromisoformat(forecast["Date"]).strftime("%A, %d %b %Y г."),
+        "day_temperature": forecast["Temperature"]["Maximum"]["Value"],
+        "night_temperature": forecast["Temperature"]["Minimum"]["Value"],
+        "wind_speed": forecast["Day"]["Wind"]["Speed"]["Value"],
+        "precipitation_probability": forecast["Day"]["PrecipitationProbability"],
+        "humidity": forecast["Day"]["RelativeHumidity"]["Average"],
+    }

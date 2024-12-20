@@ -1,4 +1,5 @@
 import os
+import locale
 
 import asyncio
 import logging
@@ -10,6 +11,7 @@ from . import info
 from weather_bot.context import Context
 
 logging.basicConfig(level=logging.INFO)
+locale.setlocale(locale.LC_TIME, "rus")
 load_dotenv()
 
 
