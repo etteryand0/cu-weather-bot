@@ -1,32 +1,49 @@
-from aiogram import F
-from aiogram.types import Message
+import logging
+import aiohttp
 
+from aiogram import F
+from aiogram.types import Message, ReplyKeyboardRemove
+import aiohttp.http_exceptions
+
+from weather_bot.filters import DialogueStateFilter
 from weather_bot.weather import router
 from weather_bot.weather.context import DialogueState
 from weather_bot.context import Context
+from weather_bot.api import get_location_key_by_location, parse_error_code
+
+from . import save_end_city, save_start_city
 
 
-@router.message(F.location)
+@router.message(
+    F.location, DialogueStateFilter([DialogueState.START_CITY, DialogueState.END_CITY])
+)
 async def location_handler(message: Message, ctx: Context):
-    dialogue = ctx.get_dialogue(message.from_user.id)
+    lat, lon = message.location.latitude, message.location.longitude
+    error_message = None
 
-    if not dialogue:
-        # Игнорируем локацию без статуса диалога
+    try:
+        location_key, city_name = await get_location_key_by_location(lat, lon)
+    except (ConnectionError, TimeoutError) as e:
+        logging.error(e)
+        error_message = "Сервис погоды не доступен в данный момент"
+    except aiohttp.ClientResponseError as e:
+        logging.error(e)
+        error_message = parse_error_code(e.status)
+
+    if error_message is not None:
+        await message.answer(error_message)
         return
 
-    lat, lon = message.location.latitude, message.location.longitude
+    if location_key is None:
+        await message.answer(
+            "Сервис погоды не смог установить ваше местоположение, пожалуйста, напишите название города",
+            reply_markup=ReplyKeyboardRemove(),
+        )
 
-    match dialogue.state:
-        case DialogueState.START_CITY:
-            dialogue.set_state(DialogueState.END_CITY)
-            dialogue.set_data({"start_city": [lat, lon]})
-            return
-        case DialogueState.END_CITY:
-            d = dialogue.data
-            d["end_city"] = [lat, lon]
-            dialogue.set_state(DialogueState.PITSTOP_CITIES)
-            dialogue.set_data(d)
-            ctx.set_dialogue(message.from_user.id, dialogue)
-            return
+    dialogue = ctx.get_dialogue(message.from_user.id)
 
-    await message.reply(f"{lat=}, {lon=}")
+    if dialogue.state == DialogueState.START_CITY:
+        await save_start_city(message, dialogue, location_key, city_name)
+        return
+
+    await save_end_city(message, dialogue, location_key, city_name)

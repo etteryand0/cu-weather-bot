@@ -5,7 +5,11 @@ import aiohttp
 
 async def get_location_key_by_location(lat, lon, *, session=None):
     url = "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search"
-    params = {"apikey": os.environ["ACCUWEATHER_API_KEY"], "q": f"{lat},{lon}"}
+    params = {
+        "apikey": os.environ["ACCUWEATHER_API_KEY"],
+        "q": f"{lat},{lon}",
+        "language": "ru-RU",
+    }
 
     if session is not None:
         response = await session.get(url, params=params)
@@ -17,13 +21,19 @@ async def get_location_key_by_location(lat, lon, *, session=None):
             response.raise_for_status()
             data = await response.json()
     if data:
-        return data["Key"]
-    return None
+        return data["Key"], data["LocalizedName"]
+    return None, None
 
 
-async def get_location_key_by_city(city_name, *, session=None):
+async def get_location_key_by_city(
+    city_name, *, session=None
+) -> tuple[str, str] | tuple[None, None]:
     url = "http://dataservice.accuweather.com/locations/v1/cities/search"
-    params = {"apikey": os.environ["ACCUWEATHER_API_KEY"], "q": city_name}
+    params = {
+        "apikey": os.environ["ACCUWEATHER_API_KEY"],
+        "q": city_name,
+        "language": "ru-RU",
+    }
 
     if session is not None:
         response = await session.get(url, params=params)
@@ -35,8 +45,8 @@ async def get_location_key_by_city(city_name, *, session=None):
             response.raise_for_status()
             data = await response.json()
     if data:
-        return data[0]["Key"]
-    return None
+        return data[0]["Key"], data[0]["LocalizedName"]
+    return None, None
 
 
 async def get_weather_data(location_key, *, session=None):
