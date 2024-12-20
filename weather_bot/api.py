@@ -5,6 +5,9 @@ import aiohttp
 
 
 async def get_location_key_by_location(lat, lon, *, session=None):
+    """
+    Получить location_key для запроса прогноза по гео координатам
+    """
     url = "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search"
     params = {
         "apikey": os.environ["ACCUWEATHER_API_KEY"],
@@ -29,6 +32,10 @@ async def get_location_key_by_location(lat, lon, *, session=None):
 async def get_location_key_by_city(
     city_name, *, session=None
 ) -> tuple[str, str] | tuple[None, None]:
+    """
+    Получить location_key для запроса прогноза по названию города
+    """
+
     url = "http://dataservice.accuweather.com/locations/v1/cities/search"
     params = {
         "apikey": os.environ["ACCUWEATHER_API_KEY"],
@@ -52,7 +59,7 @@ async def get_location_key_by_city(
 
 async def get_forecast(location_key, days: int, *, session=None):
     """
-    Получить предсказание погоды на 1, 5, 10 или 15 дней вперёд
+    Получить предсказание погоды на 1 или 5 вперёд
     """
 
     url = f"http://dataservice.accuweather.com/forecasts/v1/daily/{days}day/{location_key}"

@@ -10,7 +10,7 @@ from weather_bot.context import Dialogue
 
 class DialogueState:
     """
-    enum для стейтов диалога weather
+    Стандартизированный enum для состояний диалога weather
     """
 
     START_CITY = "start_city"
@@ -22,6 +22,9 @@ class DialogueState:
 async def save_start_city(
     message: Message, dialogue: Dialogue, location_key: str, city_name: str
 ):
+    """
+    Сохранить начальный город в глобальный контекст и попросить конечный город
+    """
     dialogue.set_state(DialogueState.END_CITY)
     dialogue.set_data({"start_city": {"key": location_key, "name": city_name}})
 
@@ -36,6 +39,9 @@ async def save_start_city(
 async def save_end_city(
     message: Message, dialogue: Dialogue, location_key: str, city_name: str
 ):
+    """
+    Сохранить конечный город в глобальный контекст и попросить промежуточные точки
+    """
     d = dialogue.data
     d["end_city"] = {"key": location_key, "name": city_name}
     dialogue.set_state(DialogueState.PITSTOP_CITIES)
@@ -51,6 +57,9 @@ async def save_end_city(
 async def save_pitstop_cities(
     message: Message, dialogue: Dialogue, pitstop_cities: list[tuple[str, str]]
 ):
+    """
+    Сохранить промежуточные города в глобальный контекст и попросить срок прогнозов
+    """
     if len(pitstop_cities) == 0:
         return
 

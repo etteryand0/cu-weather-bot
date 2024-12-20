@@ -2,6 +2,9 @@ from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
 
 def request_location_kb() -> ReplyKeyboardMarkup:
+    """
+    Создать клавиатуру для запроса местоположения
+    """
     keyboard = KeyboardButton(text="📍 Текущее местоположение", request_location=True)
     markup = ReplyKeyboardMarkup(
         keyboard=[[keyboard]],
@@ -13,6 +16,9 @@ def request_location_kb() -> ReplyKeyboardMarkup:
 
 
 def deny_pitstop_kb() -> ReplyKeyboardMarkup:
+    """
+    Создать клавиатуру для отказа от промежуточных точек
+    """
     markup = ReplyKeyboardMarkup(
         keyboard=[[KeyboardButton(text="Нет промежуточных точек")]],
         resize_keyboard=True,
@@ -23,6 +29,9 @@ def deny_pitstop_kb() -> ReplyKeyboardMarkup:
 
 
 def forecast_days_kb() -> ReplyKeyboardMarkup:
+    """
+    Создать клавиатуру для запроса срока прогноза погоды
+    """
     keyboard = [
         [
             KeyboardButton(text="1 день"),

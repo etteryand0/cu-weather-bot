@@ -2,6 +2,10 @@ from collections import defaultdict
 
 
 class Dialogue:
+    """
+    Класс для работы с диалогом. В будущем можно внедрить работу с базой данных
+    """
+
     def __init__(self, state: str, data=None):
         self.state = state
         self.data = data

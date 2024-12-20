@@ -7,6 +7,10 @@ from weather_bot.context import Context
 
 
 class DialogueStateFilter(BaseFilter):
+    """
+    Фильтр для хэндлеров aiogram по статусу диалога
+    """
+
     def __init__(self, state: Union[str, list[str]]):
         self.state = state
 

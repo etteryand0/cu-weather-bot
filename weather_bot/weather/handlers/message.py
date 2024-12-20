@@ -27,6 +27,12 @@ from weather_bot.weather.context import (
     F.text, DialogueStateFilter([DialogueState.START_CITY, DialogueState.END_CITY])
 )
 async def msg_start_end_city(message: Message, ctx: Context):
+    """
+    Данный хэндлер получает сообщением название города: начального или конечного,
+    отправляет запрос в сервис погоды для получения location_key и сохраняет
+    в глобальный контекст название города и location_key. В зависимости от
+    состояния диалога даёт пользователю следующие инструкции
+    """
     error_message = None
     try:
         location_key, city_name = await get_location_key_by_city(message.text)
@@ -58,6 +64,12 @@ async def msg_start_end_city(message: Message, ctx: Context):
 
 @router.message(F.text, DialogueStateFilter(DialogueState.PITSTOP_CITIES))
 async def msg_pitstop_cities(message: Message, ctx: Context):
+    """
+    Данный хэндлер получает сообщением названия промежуточных городов,
+    отправляет множество запросов в сервис погоды для получения location_key
+    и сохраняет в глобальный контекст названия и location_key промежуточных городов.
+    В коцне просит у пользователя срок прогнозирования погоды.
+    """
     dialogue = ctx.get_dialogue(message.from_user.id)
 
     if message.text == "Нет промежуточных точек":
@@ -119,6 +131,11 @@ async def msg_pitstop_cities(message: Message, ctx: Context):
     DialogueStateFilter(DialogueState.FORECAST_DAYS),
 )
 async def msg_forecast_days(message: Message, ctx: Context):
+    """
+    Данный хэндлер получает срок прогнозирования и обращается в сервис погоды.
+    Получив прогнозы, отправляет их пользователю отдельными сообщениями -
+    1 город = 1 сообщение
+    """
     dialogue = ctx.get_dialogue(message.from_user.id)
     days_to_forecast = 1
     if message.text == "5 дней":
