@@ -29,8 +29,3 @@ async def cmd_weather(message: Message, ctx: Context):
     ctx.start_dialogue(message.from_user.id, DialogueState.START_CITY)
 
     await message.answer(start_msg, reply_markup=markup)
-
-
-@router.message(Command("ctx"))
-async def cmd_ctx(message: Message, ctx: Context):
-    await message.answer(f"{ctx.get_dialogue(message.from_user.id)}")
