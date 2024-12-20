@@ -47,6 +47,8 @@ async def msg_start_end_city(message: Message, ctx: Context):
 
 @router.message(F.text, DialogueStateFilter(DialogueState.PITSTOP_CITIES))
 async def msg_pitstop_cities(message: Message, ctx: Context):
+    dialogue = ctx.get_dialogue(message.from_user.id)
+
     if message.text == "Нет промежуточных точек":
         # Приступить к предсказанию погоды
         return
@@ -82,17 +84,14 @@ async def msg_pitstop_cities(message: Message, ctx: Context):
         if data[0] is None:
             missing_cities.append(pitstop_cities[i])
 
-    await message.answer(f"{ctx.get_dialogue(message.from_user.id)}")
-    await message.answer(f"pitstop_cities: {",".join(pitstop_cities)}")
-
     if len(missing_cities) == 1:
         await message.answer(
-            f"Сервис погоды не смог распознать город {missing_cities[0]}. Пожалуйста, повторите попытку"
+            f"К сожалению, я не смог распознать город {missing_cities[0]}. 😕 Возможно, где-то была опечатка. Пожалуйста, попробуйте еще раз и укажите промежуточные города через запятую в одном сообщении. Жду вашего ответа!"
         )
         return
     elif len(missing_cities) > 1:
         await message.answer(
-            f"Сервис погоды не смог распознать города {', '.join(missing_cities)}. Пожалуйста, повторите попытку"
+            f"К сожалению, я не смог распознать города {', '.join(missing_cities)}. 😕 Возможно, где-то была опечатка. Пожалуйста, попробуйте еще раз и укажите промежуточные города через запятую в одном сообщении. Жду вашего ответа!"
         )
         return
 

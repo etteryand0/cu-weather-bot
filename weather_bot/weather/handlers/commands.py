@@ -7,6 +7,12 @@ from weather_bot.weather.keyboards import request_location_kb
 from weather_bot.weather.context import DialogueState
 
 
+start_msg = """Отлично! Давайте начнем. 🌍
+
+Я помогу вам получить прогноз погоды для вашего маршрута. Пожалуйста, укажите начальный город, с которого вы планируете отправиться. После этого мы сможем добавить конечный город и промежуточные точки. Жду вашего ответа!
+"""
+
+
 @router.message(Command("weather"))
 async def cmd_weather(message: Message, ctx: Context):
     """
@@ -20,7 +26,7 @@ async def cmd_weather(message: Message, ctx: Context):
 
     ctx.start_dialogue(message.from_user.id, DialogueState.START_CITY)
 
-    await message.answer("Блабла блы", reply_markup=markup)
+    await message.answer(start_msg, reply_markup=markup)
 
 
 @router.message(Command("ctx"))
